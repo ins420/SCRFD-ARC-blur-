@@ -1,207 +1,243 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>보안 구역 인원 등록 시스템</title>
-	<style>
-		body {
-			font-family: 'Malgun Gothic', sans-serif;
-			background-color: #2c2f33;
-			color: white;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100vh;
-			margin: 0;
-		}
-		#loginScreen {
-			background-color: #23272a;
-			padding: 40px;
-			border-radius: 10px;
-			box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-			text-align: center;
-			width: 300px;
-		}
-		#loginScreen input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #555; border-radius: 5px; background-color: #333; color: white; }
-		#loginScreen button { width: 100%; padding: 10px; background-color: #7289da; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 15px; }
-		#loginScreen button:hover { background-color: #5b6eae; }
-        
-		#mainScreen { display: none; text-align: center; }
-		video { border: 3px solid #7289da; border-radius: 10px; margin-bottom: 20px; background-color: #000; }
-		.controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-		input[type="text"], select { padding: 10px; font-size: 16px; border-radius: 5px; border: none; }
-        
-		button.capture-btn {
-			padding: 12px 24px; font-size: 16px; font-weight: bold; background-color: #43b581; color: white; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s;
-		}
-		button.capture-btn:hover { background-color: #3ca374; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>보안 구역 인원 등록 시스템</title>
+    <style>
+        /* ✨ 라이트 모드 기반 스타일링 */
+        body {
+            font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+            background-color: #F8FAFC; /* 부드러운 연회색 배경 */
+            color: #0F172A; /* 짙은 남회색 텍스트 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-		/* 새 인원 등록 버튼 스타일 (초기엔 숨김) */
-		button.reset-btn {
-			padding: 12px 24px; font-size: 16px; font-weight: bold; background-color: #7289da; color: white; border: none; border-radius: 5px; cursor: pointer; display: none; transition: 0.3s;
-		}
-		button.reset-btn:hover { background-color: #5b6eae; }
+        /* ── 로그인 스크린 ── */
+        #loginScreen {
+            background-color: #FFFFFF;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
+            border: 1px solid #E2E8F0;
+            text-align: center;
+            width: 320px;
+        }
+        #loginScreen h2 { margin-top: 0; color: #1E293B; }
+        #loginScreen input {
+            width: 90%; padding: 12px; margin: 10px 0;
+            border: 1px solid #CBD5E1; border-radius: 8px;
+            background-color: #F8FAFC; color: #0F172A;
+            font-size: 14px; outline: none; transition: all 0.2s;
+        }
+        #loginScreen input:focus { border-color: #3B82F6; background-color: #FFFFFF; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        #loginScreen button {
+            width: 100%; padding: 12px; background-color: #3B82F6; color: white;
+            border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
+            cursor: pointer; margin-top: 15px; transition: background-color 0.2s;
+        }
+        #loginScreen button:hover { background-color: #2563EB; }
         
-		#statusMessage { margin-top: 20px; font-size: 18px; font-weight: bold; }
-		#instructionText { font-size: 22px; color: #43b581; margin-bottom: 15px; font-weight: bold; transition: color 0.3s; }
-	</style>
+        /* ── 메인 스크린 ── */
+        #mainScreen { display: none; text-align: center; }
+        #mainScreen h2 { color: #1E293B; }
+        
+        video {
+            border: 1px solid #E2E8F0; border-radius: 16px; margin-bottom: 24px;
+            background-color: #F1F5F9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        
+        .controls { display: flex; gap: 12px; justify-content: center; margin-bottom: 24px; }
+        input[type="text"], select {
+            padding: 12px 16px; font-size: 15px; border-radius: 8px;
+            border: 1px solid #CBD5E1; outline: none; transition: all 0.2s;
+            color: #0F172A; background: #FFFFFF;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* 촬영 버튼 (기본: 초록색) */
+        button.capture-btn {
+            padding: 14px 28px; font-size: 16px; font-weight: bold;
+            background-color: #10B981; color: white; border: none;
+            border-radius: 8px; cursor: pointer; transition: 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+        }
+        button.capture-btn:hover { background-color: #059669; }
+
+        /* 초기화 버튼 (파란색) */
+        button.reset-btn {
+            padding: 14px 28px; font-size: 16px; font-weight: bold;
+            background-color: #3B82F6; color: white; border: none;
+            border-radius: 8px; cursor: pointer; display: none; transition: 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+        }
+        button.reset-btn:hover { background-color: #2563EB; }
+        
+        #statusMessage { margin-top: 20px; font-size: 16px; font-weight: 600; min-height: 24px; }
+        #instructionText { font-size: 22px; color: #10B981; margin-bottom: 16px; font-weight: bold; transition: color 0.3s; }
+    </style>
 </head>
 <body>
 
-	<div id="loginScreen">
-		<h2>보안 관리자 로그인</h2>
-		<input type="text" id="adminId" placeholder="아이디">
-		<input type="password" id="adminPw" placeholder="비밀번호">
-		<button onclick="checkLogin()">로그인</button>
-		<div id="loginError" style="color: #f04747; margin-top: 10px; font-size: 14px;"></div>
-	</div>
+    <div id="loginScreen">
+        <h2>보안 관리자 로그인</h2>
+        <input type="text" id="adminId" placeholder="아이디">
+        <input type="password" id="adminPw" placeholder="비밀번호">
+        <button onclick="checkLogin()">로그인</button>
+        <div id="loginError" style="color: #DC2626; margin-top: 12px; font-size: 14px; font-weight: 500;"></div>
+    </div>
 
-	<div id="mainScreen">
-		<h2>보안 구역 인원 등록</h2>
-		<div id="welcomeMessage" style="color: #7289da; font-size: 20px; font-weight: bold; margin-bottom: 20px;"></div>
+    <div id="mainScreen">
+        <h2>보안 구역 인원 등록</h2>
+        <div id="welcomeMessage" style="color: #2563EB; font-size: 18px; font-weight: bold; margin-bottom: 24px;"></div>
         
-		<div id="instructionText">📷 1단계: 카메라의 정면을 쳐다보세요</div>
+        <div id="instructionText">📷 1단계: 카메라의 정면을 쳐다보세요</div>
 
-		<video id="video" width="640" height="480" autoplay></video>
-		<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+        <video id="video" width="640" height="480" autoplay playsinline></video>
+        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
         
-		<div class="controls">
-			<input type="text" id="nameInput" placeholder="이름 입력 (예: 홍길동)">
-			<select id="groupSelect">
-				<option value="허가">허가 (Allowed)</option>
-				<option value="준허가">준허가 (Semi-Allowed)</option>
-				<option value="비허가">비허가 (Denied)</option>
-			</select>
-		</div>
+        <div class="controls">
+            <input type="text" id="nameInput" placeholder="이름 입력 (예: 홍길동)" autocomplete="off">
+            <select id="groupSelect">
+                <option value="허가">허가 (Allowed)</option>
+                <option value="준허가">준허가 (Semi-Allowed)</option>
+                <option value="비허가">비허가 (Denied)</option>
+            </select>
+        </div>
         
-		<button class="capture-btn" id="captureBtn" onclick="captureAndSend()">정면 사진 찍기</button>
+        <button class="capture-btn" id="captureBtn" onclick="captureAndSend()">정면 사진 찍기</button>
         
-		<button class="reset-btn" id="resetBtn" onclick="resetForNewPerson()">🔄 다른 인원 새로 등록하기</button>
+        <button class="reset-btn" id="resetBtn" onclick="resetForNewPerson()">🔄 다른 인원 새로 등록하기</button>
 
-		<div id="statusMessage"></div>
-	</div>
+        <div id="statusMessage"></div>
+    </div>
 
-	<script>
-		const video = document.getElementById('video');
-		const canvas = document.getElementById('canvas');
-		const instructionText = document.getElementById('instructionText');
-		const statusMessage = document.getElementById('statusMessage');
-		const nameInput = document.getElementById('nameInput');
-		const captureBtn = document.getElementById('captureBtn');
-		const resetBtn = document.getElementById('resetBtn');
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const instructionText = document.getElementById('instructionText');
+        const statusMessage = document.getElementById('statusMessage');
+        const nameInput = document.getElementById('nameInput');
+        const captureBtn = document.getElementById('captureBtn');
+        const resetBtn = document.getElementById('resetBtn');
         
-		let currentStep = 1;
+        let currentStep = 1;
 
-		// [1단계] 로그인 확인
-		function checkLogin() {
-			const id = document.getElementById('adminId').value;
-			const pw = document.getElementById('adminPw').value;
-			if (id === 'hkl9292' && pw === 'qwon4616!') {
-				document.getElementById('loginScreen').style.display = 'none';
-				document.getElementById('mainScreen').style.display = 'block';
-				document.getElementById('welcomeMessage').innerText = "🎉 환영합니다, 관리자님!";
-				startCamera();
-			} else {
-				document.getElementById('loginError').innerText = "❌ 아이디 또는 비밀번호가 일치하지 않습니다.";
-			}
-		}
+        // [1단계] 로그인 확인
+        function checkLogin() {
+            const id = document.getElementById('adminId').value;
+            const pw = document.getElementById('adminPw').value;
+            if (id === 'hkl9292' && pw === 'qwon4616!') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainScreen').style.display = 'block';
+                document.getElementById('welcomeMessage').innerText = "🎉 환영합니다, 관리자님!";
+                startCamera();
+            } else {
+                document.getElementById('loginError').innerText = "❌ 아이디 또는 비밀번호가 일치하지 않습니다.";
+            }
+        }
 
-		function startCamera() {
-			navigator.mediaDevices.getUserMedia({ video: true })
-				.then(stream => { video.srcObject = stream; })
-				.catch(err => { alert("카메라 권한을 허용해주세요!"); });
-		}
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => { video.srcObject = stream; })
+                .catch(err => { alert("카메라 권한을 허용해주세요!"); });
+        }
 
-		// [3~5단계] 사진 촬영 및 서버 판별 로직
-		function captureAndSend() {
-			const name = nameInput.value.trim();
-			const group = document.getElementById('groupSelect').value;
+        // [3~5단계] 사진 촬영 및 서버 판별 로직
+        function captureAndSend() {
+            const name = nameInput.value.trim();
+            const group = document.getElementById('groupSelect').value;
 
-			// [2단계] 이름 입력 검증
-			if (!name) { alert("이름을 먼저 입력해주세요!"); return; }
+            // [2단계] 이름 입력 검증
+            if (!name) { alert("이름을 먼저 입력해주세요!"); return; }
 
-			const context = canvas.getContext('2d');
-			context.drawImage(video, 0, 0, canvas.width, canvas.height);
-			const imageData = canvas.toDataURL('image/jpeg');
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
 
-			statusMessage.style.color = "white";
-			statusMessage.innerText = "서버로 전송 중... 판별 대기...";
+            statusMessage.style.color = "#475569"; // 전송 중 텍스트 색상 (회색)
+            statusMessage.innerText = "서버로 전송 중... 판별 대기...";
 
-			fetch('/api/register', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name: name, group: group, image_base64: imageData })
-			})
-			.then(response => response.json())
-			.then(data => {
-				if (data.status === 'success') {
-					// 정면 성공 -> 좌측면으로
-					if (currentStep === 1 && data.message.includes('정면')) {
-						currentStep = 2;
-						instructionText.innerText = "📷 2단계: 우측 측면을 쳐다보세요";
-						instructionText.style.color = "#faa61a";
-						statusMessage.style.color = "#43b581";
-						statusMessage.innerText = "✅ 정면 등록 완료! 고개를 돌리고 아래 버튼을 누르세요.";
-						captureBtn.innerText = "좌측면 사진 찍기"; 
-						captureBtn.style.backgroundColor = "#faa61a"; 
-					} 
-					// 좌측면 성공 -> 우측면으로
-					else if (currentStep === 2 && data.message.includes('좌측면')) {
-						currentStep = 3;
-						instructionText.innerText = "📷 3단계: 좌측 측면을 쳐다보세요";
-						instructionText.style.color = "#faa61a";
-						statusMessage.style.color = "#43b581";
-						statusMessage.innerText = "✅ 좌측면 등록 완료! 반대쪽으로 고개를 돌리고 아래 버튼을 누르세요.";
-						captureBtn.innerText = "우측면 사진 찍기"; 
-					} 
-					// 우측면 성공 -> 완료 및 버튼 교체
-					else if (currentStep === 3 && data.message.includes('우측면')) {
-						currentStep = 4;
-						instructionText.innerText = "🎉 모든 각도 등록이 완료되었습니다!";
-						instructionText.style.color = "#7289da";
-						statusMessage.style.color = "#43b581";
-						statusMessage.innerText = "✅ 3가지 각도가 성공적으로 DB에 저장되었습니다.";
+            fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, group: group, image_base64: imageData })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // 정면 성공 -> 좌측면으로
+                    if (currentStep === 1 && data.message.includes('정면')) {
+                        currentStep = 2;
+                        instructionText.innerText = "📷 2단계: 우측 측면을 쳐다보세요";
+                        instructionText.style.color = "#F59E0B"; // 주황색
+                        statusMessage.style.color = "#10B981"; // 초록색
+                        statusMessage.innerText = "✅ 정면 등록 완료! 고개를 돌리고 아래 버튼을 누르세요.";
+                        captureBtn.innerText = "좌측면 사진 찍기"; 
+                        captureBtn.style.backgroundColor = "#F59E0B"; 
+                    } 
+                    // 좌측면 성공 -> 우측면으로
+                    else if (currentStep === 2 && data.message.includes('좌측면')) {
+                        currentStep = 3;
+                        instructionText.innerText = "📷 3단계: 좌측 측면을 쳐다보세요";
+                        instructionText.style.color = "#F59E0B";
+                        statusMessage.style.color = "#10B981";
+                        statusMessage.innerText = "✅ 좌측면 등록 완료! 반대쪽으로 고개를 돌리고 아래 버튼을 누르세요.";
+                        captureBtn.innerText = "우측면 사진 찍기"; 
+                    } 
+                    // 우측면 성공 -> 완료 및 버튼 교체
+                    else if (currentStep === 3 && data.message.includes('우측면')) {
+                        currentStep = 4;
+                        instructionText.innerText = "🎉 모든 각도 등록이 완료되었습니다!";
+                        instructionText.style.color = "#2563EB"; // 파란색
+                        statusMessage.style.color = "#10B981";
+                        statusMessage.innerText = "✅ 3가지 각도가 성공적으로 DB에 저장되었습니다.";
                         
-						// ⭐️ 기존 촬영 버튼을 숨기고 '새 인원 등록' 버튼 표시 ⭐️
-						captureBtn.style.display = "none";
-						resetBtn.style.display = "inline-block";
-					} 
-					else {
-						let expected = currentStep === 1 ? '정면' : (currentStep === 2 ? '좌측면' : '우측면');
-						statusMessage.style.color = "#f04747";
-						statusMessage.innerText = `⚠️ [주의] 현재 ${expected}을(를) 찍어야 합니다. 다시 찍어주세요!`;
-					}
-				} else {
-					statusMessage.style.color = "#f04747";
-					statusMessage.innerText = data.message;
-				}
-			})
-			.catch(error => {
-				statusMessage.style.color = "#f04747";
-				statusMessage.innerText = "서버 통신 오류. 파이썬 서버가 켜져 있는지 확인하세요.";
-			});
-		}
+                        // ⭐️ 기존 촬영 버튼을 숨기고 '새 인원 등록' 버튼 표시 ⭐️
+                        captureBtn.style.display = "none";
+                        resetBtn.style.display = "inline-block";
+                    } 
+                    else {
+                        let expected = currentStep === 1 ? '정면' : (currentStep === 2 ? '좌측면' : '우측면');
+                        statusMessage.style.color = "#DC2626"; // 경고 빨간색
+                        statusMessage.innerText = `⚠️ [주의] 현재 ${expected}을(를) 찍어야 합니다. 다시 찍어주세요!`;
+                    }
+                } else {
+                    statusMessage.style.color = "#DC2626";
+                    statusMessage.innerText = data.message;
+                }
+            })
+            .catch(error => {
+                statusMessage.style.color = "#DC2626";
+                statusMessage.innerText = "서버 통신 오류. 파이썬 서버가 켜져 있는지 확인하세요.";
+            });
+        }
 
-		// ⭐️ [6단계] 초기화 및 루프 함수 ⭐️
-		function resetForNewPerson() {
-			// 1. 상태 변수 및 텍스트 초기화
-			currentStep = 1;
-			nameInput.value = "";
-			instructionText.innerText = "📷 1단계: 카메라의 정면을 쳐다보세요";
-			instructionText.style.color = "#43b581";
-			statusMessage.innerText = "";
+        // ⭐️ [6단계] 초기화 및 루프 함수 ⭐️
+        function resetForNewPerson() {
+            // 1. 상태 변수 및 텍스트 초기화
+            currentStep = 1;
+            nameInput.value = "";
+            instructionText.innerText = "📷 1단계: 카메라의 정면을 쳐다보세요";
+            instructionText.style.color = "#10B981";
+            statusMessage.innerText = "";
             
-			// 2. 버튼 상태 원상 복구 (루프)
-			resetBtn.style.display = "none";
-			captureBtn.style.display = "inline-block";
-			captureBtn.innerText = "정면 사진 찍기";
-			captureBtn.style.backgroundColor = "#43b581";
+            // 2. 버튼 상태 원상 복구 (루프)
+            resetBtn.style.display = "none";
+            captureBtn.style.display = "inline-block";
+            captureBtn.innerText = "정면 사진 찍기";
+            captureBtn.style.backgroundColor = "#10B981";
             
-			// 3. 커서를 이름 입력창으로 자동 이동 (편의성)
-			nameInput.focus();
-		}
-	</script>
+            // 3. 커서를 이름 입력창으로 자동 이동 (편의성)
+            nameInput.focus();
+        }
+    </script>
 </body>
 </html>
